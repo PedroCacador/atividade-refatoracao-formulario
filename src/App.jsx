@@ -1,60 +1,29 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 import axios from 'axios';
 
 function App() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [job, setJob] = useState('');
-  const [age, setAge] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [phone, setPhone] = useState('');
-  const [github, setGithub] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    job: '',
+    age: '',
+    city: '',
+    state: '',
+    phone: '',
+    github: ''
+  });
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-  function handleEmailChange(e) {
-    setEmail(e.target.value);
-  }
-
-  function handleJobChange(e) {
-    setJob(e.target.value);
-  }
-
-  function handleAgeChange(e) {
-    setAge(e.target.value);
-  }
-
-  function handleCityChange(e) {
-    setCity(e.target.value);
-  }
-
-  function handleStateChange(e) {
-    setState(e.target.value);
-  }
-
-  function handlePhoneChange(e) {
-    setPhone(e.target.value);
-  }
-
-  function handleGithubChange(e) {
-    setGithub(e.target.value);
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
 
   async function handleSubmit(e) {
-    const formData = {
-      name: name,
-      email: email,
-      job: job,
-      age: age,
-      city: city,
-      state: state,
-      phone: phone,
-      github: github
-    };
+    e.preventDefault();
 
     try {
       const response = await axios.post('https://reqres.in/api/users', formData, {
@@ -62,26 +31,122 @@ function App() {
           'x-api-key': 'reqres-free-v1'
         }
       });
-      alert('Usuário criado! ID: ' + response.data.id);
+      console.log('Resposta da API:', response.data);
+      alert('Usuário criado com sucesso! ID: ' + response.data.id + '. Verifique o console para mais detalhes.');
     } catch (error) {
-      alert('Erro ao enviar os dados.');
-      console.error(error);
+      console.error('Erro ao enviar os dados:', error.response || error.message || error);
+      alert('Erro ao enviar os dados. Verifique o console para mais detalhes.');
     }
   }
 
   return (
-    <div>
+    <div className="container">
       <h2>Cadastro de Usuário</h2>
-      <form>
-        <input placeholder="Nome" value={name} onChange={handleNameChange} />
-        <input placeholder="Email" value={email} onChange={handleEmailChange} />
-        <input placeholder="Cargo" value={job} onChange={handleJobChange} />
-        <input placeholder="Idade" value={age} onChange={handleAgeChange} />
-        <input placeholder="Cidade" value={city} onChange={handleCityChange} />
-        <input placeholder="Estado" value={state} onChange={handleStateChange} />
-        <input placeholder="Telefone" value={phone} onChange={handlePhoneChange} />
-        <input placeholder="GitHub" value={github} onChange={handleGithubChange} />
-        <button type="button" onClick={handleSubmit}>Enviar</button>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">Nome:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Nome Completo"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="seu@email.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="job">Cargo:</label>
+          <input
+            type="text"
+            id="job"
+            name="job"
+            placeholder="Ex: Desenvolvedor(a) React"
+            value={formData.job}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="age">Idade:</label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            placeholder="Sua Idade"
+            value={formData.age}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="city">Cidade:</label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            placeholder="Sua Cidade"
+            value={formData.city}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="state">Estado:</label>
+          <input
+            type="text"
+            id="state"
+            name="state"
+            placeholder="Seu Estado (UF)"
+            value={formData.state}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="phone">Telefone:</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="(XX) XXXXX-XXXX"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="github">GitHub:</label>
+          <input
+            type="text"
+            id="github"
+            name="github"
+            placeholder="Seu usuário no GitHub"
+            value={formData.github}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit" className="submit-button">Enviar Cadastro</button>
       </form>
     </div>
   );
